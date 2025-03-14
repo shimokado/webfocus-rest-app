@@ -1,0 +1,23 @@
+.rightPanel {
+  flex: 1;
+  padding: 2rem;
+  overflow: auto;
+}
+
+.welcome {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+  padding-top: 3rem;
+}
+
+.welcome h1 {
+  color: #0066cc;
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.welcome p {
+  color: #666;
+  font-size: 1.1rem;
+}
