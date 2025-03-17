@@ -319,14 +319,14 @@ export class WebFocusService {
   /**
    * CSRFトークン名を取得
    */
-  get currentCsrfTokenName(): string | null {
-    return this.csrfTokenName;
-  }
+  // get currentCsrfTokenName(): string | null {
+  //   return this.csrfTokenName;
+  // }
 
   /**
    * CSRFトークン値を取得
    */
-  get currentCsrfTokenValue(): string | null {
-    return this.csrfTokenValue;
-  }
+  // get currentCsrfTokenValue(): string | null {
+  //   return this.csrfTokenValue;
+  // }
 }

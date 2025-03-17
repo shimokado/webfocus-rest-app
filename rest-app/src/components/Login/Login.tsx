@@ -33,7 +33,7 @@ export const Login = ({ onLogin }: LoginProps) => {
   return (
     <div className={styles.loginContainer}>
       <div className={styles.loginBox}>
-        <h1 className={styles.title}>WebFOCUS Portal</h1>
+        <h1 className={styles.title}>WebFOCUS WebApp</h1>
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.inputGroup}>
             <label htmlFor="username">ユーザー名</label>

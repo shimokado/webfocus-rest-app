@@ -10,7 +10,7 @@ const RightPanel: React.FC<RightPanelProps> = ({ children }) => {
     <div className={styles.rightPanel}>
       {children || (
         <div className={styles.welcome}>
-          <h1>WebFOCUS ポータルへようこそ</h1>
+          <h1>WebFOCUS WebAppへようこそ</h1>
           <p>左側のメニューからアクションを選択してください。</p>
         </div>
       )}

@@ -9,7 +9,7 @@ interface HeaderProps {
 const Header: React.FC<HeaderProps> = ({ userName, userDisplayName, userFullPath }) => {
   return (
     <header className={styles.header}>
-      <div className={styles.logo}>WebFOCUS Portal</div>
+      <div className={styles.logo}>WebFOCUS WebApp</div>
       <div className={styles.userInfo}>
         <div className={styles.userDetail}>
           <span className={styles.label}>ユーザーID:</span>

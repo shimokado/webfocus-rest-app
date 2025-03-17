@@ -10,7 +10,7 @@ export default defineConfig({
       '/ibi_apps': {
         target: 'http://localhost:8080',
         changeOrigin: false,
-        secure: false,
+        secure: true,
       }
     }
   }
