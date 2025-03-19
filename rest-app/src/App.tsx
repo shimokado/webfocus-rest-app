@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Login } from './components/Login/Login';
 import { WebFocusService, FolderItem } from './services/WebFocusService';
 import MainLayout from './components/Layout/MainLayout';
-import FolderCardGrid from './components/Card/FolderCardGrid';
+import RightPanel from './components/Panel/RightPanel';
 import './App.css';
 
 function App() {
@@ -13,8 +13,9 @@ function App() {
   const [csrfTokenName, setCsrfTokenName] = useState<string | null>(null);
   const [csrfTokenValue, setCsrfTokenValue] = useState<string | null>(null);
   
-  // ワークスペース表示用の状態
+  // フォルダ表示用の状態
   const [folderItems, setFolderItems] = useState<FolderItem[]>([]);
+  const [currentPath, setCurrentPath] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
@@ -31,15 +32,6 @@ function App() {
         setCsrfTokenName(loginResult.csrfTokenName || null);
         setCsrfTokenValue(loginResult.csrfTokenValue || null);
         setUserFullPath(loginResult.userFullPath || null);
-        
-        console.log('保存した状態変数:', {
-          userName: username,
-          userDisplayName: loginResult.userDisplayName,
-          csrfTokenName: loginResult.csrfTokenName,
-          csrfTokenValue: loginResult.csrfTokenValue,
-          userFullPath: loginResult.userFullPath
-        });
-        
         return;
       }
       
@@ -50,48 +42,62 @@ function App() {
     }
   };
 
-  const handleWorkspaceClick = async () => {
+  // フォルダの内容を取得する共通関数
+  const loadFolderContents = async (path: string) => {
     try {
       setIsLoading(true);
       setErrorMessage(null);
 
-      const result = await webfocusService.getResourceItems('IBFS:/WFC/Repository');
+      const result = await webfocusService.getResourceItems(path);
       
       if (result.success) {
         setFolderItems(result.items);
+        setCurrentPath(path);
       } else {
         setErrorMessage(result.message);
         setFolderItems([]);
       }
     } catch (error) {
-      console.error('Error loading workspace:', error);
-      setErrorMessage('ワークスペースの読み込み中にエラーが発生しました');
+      console.error('Error loading folder contents:', error);
+      setErrorMessage('フォルダの読み込み中にエラーが発生しました');
       setFolderItems([]);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFolderItemClick = (item: FolderItem) => {
-    console.log('Folder item clicked:', item);
-    // ここに項目クリック時の処理を実装
+  // メインワークスペースを表示
+  const handleWorkspaceClick = () => {
+    loadFolderContents('IBFS:/WFC/Repository');
   };
 
-  // 右パネルに表示するコンテンツを決定
-  const renderRightPanelContent = () => {
-    if (isLoading) {
-      return <div className="loading">読み込み中...</div>;
+  // フォルダアイテムがクリックされたときの処理
+  const handleFolderItemClick = async (item: FolderItem) => {
+    if (item.container) {
+      // フォルダの場合は内容を表示
+      loadFolderContents(item.fullPath);
+    } else if (item.type === "FexFile") {
+      // FexFileの場合は新しいタブでレポートを開く
+      const reportUrl = webfocusService.getReportUrl(item.fullPath);
+      window.open(reportUrl, '_blank');
+    } else if (item.type === "URLFile") {
+      try {
+        // URLFileの場合はコンテンツを取得してURLとして開く
+        const url = await webfocusService.getContent(item.fullPath);
+        if (url && url.trim()) {
+          window.open(url.trim(), '_blank');
+        } else {
+          console.error('Empty URL content received');
+        }
+      } catch (error) {
+        console.error('Error opening URL file:', error);
+      }
     }
+  };
 
-    if (errorMessage) {
-      return <div className="error">{errorMessage}</div>;
-    }
-
-    if (folderItems.length > 0) {
-      return <FolderCardGrid items={folderItems} onItemClick={handleFolderItemClick} />;
-    }
-
-    return null;
+  // パスをクリックしたときの処理を追加
+  const handlePathClick = (path: string) => {
+    loadFolderContents(path);
   };
 
   return (
@@ -104,7 +110,16 @@ function App() {
           userDisplayName={userDisplayName}
           userFullPath={userFullPath}
           onWorkspaceClick={handleWorkspaceClick}
-          rightPanelContent={renderRightPanelContent()}
+          rightPanelContent={
+            <RightPanel
+              currentPath={currentPath}
+              items={folderItems}
+              isLoading={isLoading}
+              errorMessage={errorMessage}
+              onItemClick={handleFolderItemClick}
+              onPathClick={handlePathClick}
+            />
+          }
         />
       )}
     </div>

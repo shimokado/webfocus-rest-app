@@ -1,7 +1,50 @@
 .rightPanel {
   flex: 1;
-  padding: 2rem;
-  overflow: auto;
+  padding: 20px;
+  background-color: #f8f9fa;
+  height: 100%;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.pathBar {
+  background-color: white;
+  padding: 12px 16px;
+  margin-bottom: 20px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.pathLabel {
+  font-weight: 600;
+  color: #455a64;
+  margin-right: 8px;
+}
+
+.path {
+  color: #37474f;
+  font-family: monospace;
+}
+
+.content {
+  flex: 1;
+}
+
+.loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #78909c;
+}
+
+.error {
+  padding: 16px;
+  background-color: #ffebee;
+  color: #c62828;
+  border-radius: 6px;
+  margin: 20px 0;
 }
 
 .welcome {
@@ -20,4 +63,32 @@
 .welcome p {
   color: #666;
   font-size: 1.1rem;
+}
+
+.pathParts {
+  display: inline-flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 2px;
+  font-family: monospace;
+}
+
+.pathLink {
+  background: none;
+  border: none;
+  color: #0066cc;
+  padding: 0 2px;
+  cursor: pointer;
+  font-family: monospace;
+  text-decoration: underline;
+  font-size: inherit;
+}
+
+.pathLink:hover {
+  color: #003d7a;
+}
+
+.pathLink:focus {
+  outline: 1px dotted #0066cc;
+  outline-offset: 2px;
 }

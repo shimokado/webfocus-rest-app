@@ -1,42 +1,35 @@
 import { ReactNode } from 'react';
+import styles from './MainLayout.module.css';
 import Header from './Header';
 import Footer from './Footer';
 import LeftPanel from '../Panel/LeftPanel';
-import RightPanel from '../Panel/RightPanel';
-import styles from './MainLayout.module.css';
 
 interface MainLayoutProps {
   userName: string | null;
   userDisplayName: string | null;
   userFullPath: string | null;
-  leftPanelContent?: ReactNode;
-  rightPanelContent?: ReactNode;
   onWorkspaceClick?: () => void;
+  rightPanelContent?: ReactNode;
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({
   userName,
   userDisplayName,
   userFullPath,
-  leftPanelContent,
-  rightPanelContent,
-  onWorkspaceClick
+  onWorkspaceClick,
+  rightPanelContent
 }) => {
   return (
     <div className={styles.container}>
       <Header 
-        userName={userName} 
-        userDisplayName={userDisplayName} 
-        userFullPath={userFullPath} 
+        userName={userName}
+        userDisplayName={userDisplayName}
+        userFullPath={userFullPath}
       />
       
       <div className={styles.content}>
-        <LeftPanel onWorkspaceClick={onWorkspaceClick}>
-          {leftPanelContent}
-        </LeftPanel>
-        <RightPanel>
-          {rightPanelContent}
-        </RightPanel>
+        <LeftPanel onWorkspaceClick={onWorkspaceClick} />
+        {rightPanelContent}
       </div>
       
       <Footer />

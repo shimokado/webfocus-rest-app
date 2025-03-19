@@ -27,6 +27,7 @@
   width: 24px;
   height: 24px;
   margin-right: 12px;
+  object-fit: contain;
 }
 
 .title {
@@ -63,8 +64,31 @@
 .detail {
   display: flex;
   justify-content: space-between;
+  align-items: flex-start;
+  padding: 2px 0;
+  gap: 8px;
 }
 
 .detail strong {
   margin-right: 0.5rem;
+  flex-shrink: 0;
+  color: #455a64;
+}
+
+.path {
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #0066cc;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
+}
+
+.policy {
+  font-family: monospace;
+  font-size: 0.9em;
+  color: #455a64;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  word-break: break-all;
 }

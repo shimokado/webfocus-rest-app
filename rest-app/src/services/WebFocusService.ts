@@ -23,6 +23,7 @@ export interface FolderItem {
   createdBy: string;
   lastModified: string;
   container: boolean;
+  policy: string;  // policy属性を追加
 }
 
 /**
@@ -141,6 +142,39 @@ export class WebFocusService {
         message: error instanceof Error ? error.message : 'Unknown error occurred',
         items: []
       };
+    }
+  }
+
+  /**
+   * リソースのコンテンツを取得する
+   * @param path リソースパス
+   * @returns テキストコンテンツ
+   */
+  public async getContent(path: string): Promise<string> {
+    try {
+      // URLパラメータの構築
+      const params = new URLSearchParams({
+        IBIRS_action: 'getContent',
+        IBIRS_service: WebFocusService.IBIRS_SERVICE,
+        IBIRS_path: path,
+        IBIRS_args: '__null'
+      });
+
+      // URLの構築
+      const url = `${this.baseUrl}?${params.toString()}`;
+
+      // リクエストの実行
+      const response = await fetch(url);
+      
+      if (!response.ok) {
+        throw new Error(`Content fetch failed with status: ${response.status} ${response.statusText}`);
+      }
+
+      // テキストとして直接返す（XMLではない）
+      return await response.text();
+    } catch (error) {
+      console.error('Content fetch error:', error);
+      throw error;
     }
   }
 
@@ -288,11 +322,30 @@ export class WebFocusService {
         thumbPath,
         createdBy,
         lastModified,
-        container
+        container,
+        policy: item.getAttribute('policy') || ''  // policy属性を追加
       });
     });
 
     return items;
+  }
+
+  /**
+   * レポートを実行してURLを取得する
+   * @param path レポートのパス
+   * @returns レポート実行用のURL
+   */
+  getReportUrl(path: string): string {
+    // クエリパラメータを構築
+    const params = new URLSearchParams({
+      IBIRS_action: 'run',
+      IBIRS_service: 'ibfs',
+      IBIRS_path: path,
+      IBIRS_args: '__null'
+    });
+
+    // ベースURLにパラメータを追加
+    return `${this.baseUrl}?${params.toString()}`;
   }
 
   /**

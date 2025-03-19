@@ -43,7 +43,15 @@ const FolderCard: React.FC<FolderCardProps> = ({ item, onClick }) => {
             <strong>作成者:</strong> {item.createdBy}
           </span>
           <span className={styles.detail}>
-            <strong>最終更新:</strong> {formatDate(item.lastModified)}
+            <strong>パス:</strong>
+            <span className={styles.path}>{item.fullPath}</span>
+          </span>
+          <span className={styles.detail}>
+            <strong>ポリシー:</strong>
+            <span className={styles.policy}>{item.policy}</span>
+          </span>
+          <span className={styles.detail}>
+            <strong>更新日時:</strong> {formatDate(item.lastModified)}
           </span>
         </div>
       </div>
