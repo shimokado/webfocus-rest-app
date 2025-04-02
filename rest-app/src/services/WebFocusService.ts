@@ -179,6 +179,64 @@ export class WebFocusService {
   }
 
   /**
+   * Fetches the description of a FEX file to determine if variable input is required.
+   * @param path The full path of the FEX file.
+   * @returns Parsed response indicating variable input requirements.
+   */
+  public async describeFex(path: string): Promise<{ requiresInput: boolean; variables: any[] }> {
+    try {
+      const params = new URLSearchParams({
+        IBIRS_action: 'describeFex',
+        IBIRS_service: WebFocusService.IBIRS_SERVICE,
+        IBIRS_path: path,
+      });
+
+      const url = `${this.baseUrl}?${params.toString()}`;
+      const response = await fetch(url);
+
+      if (!response.ok) {
+        throw new Error(`describeFex failed with status: ${response.status} ${response.statusText}`);
+      }
+
+      const xmlText = await response.text();
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+
+      const amperMap = xmlDoc.querySelector('amperMap');
+      const variables: any[] = [];
+      let requiresInput = false;
+
+      if (amperMap) {
+        amperMap.querySelectorAll('entry').forEach(entry => {
+          const key = entry.querySelector('key')?.getAttribute('value');
+          const value = entry.querySelector('value');
+          const type = value?.querySelector('type')?.getAttribute('name');
+
+          if (type === 'defaultType' || type === 'unresolved') {
+            requiresInput = true;
+            const variable = {
+              name: key,
+              type,
+              format: value?.getAttribute('format') || '',
+              defaultValue: value?.querySelector('userDefValues > item')?.getAttribute('value') || '',
+              options: Array.from(value?.querySelectorAll('values > entry') || []).map(option => ({
+                key: option.querySelector('key')?.getAttribute('value'),
+                value: option.querySelector('value')?.getAttribute('value'),
+              })),
+            };
+            variables.push(variable);
+          }
+        });
+      }
+
+      return { requiresInput, variables };
+    } catch (error) {
+      console.error('describeFex error:', error);
+      throw error;
+    }
+  }
+
+  /**
    * 共通のfetchとXML解析処理
    * 
    * @param action - 実行するアクション

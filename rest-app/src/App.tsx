@@ -3,6 +3,7 @@ import { Login } from './components/Login/Login';
 import { WebFocusService, FolderItem } from './services/WebFocusService';
 import MainLayout from './components/Layout/MainLayout';
 import RightPanel from './components/Panel/RightPanel';
+import VariableInputForm from './components/Form/VariableInputForm';
 import './App.css';
 
 function App() {
@@ -19,6 +20,10 @@ function App() {
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   
+  const [showVariableForm, setShowVariableForm] = useState(false);
+  const [variables, setVariables] = useState<any[]>([]);
+  const [currentFexPath, setCurrentFexPath] = useState<string | null>(null);
+
   const webfocusService = new WebFocusService();
 
   const handleLogin = async (username: string, password: string) => {
@@ -77,9 +82,22 @@ function App() {
       // フォルダの場合は内容を表示
       loadFolderContents(item.fullPath);
     } else if (item.type === "FexFile") {
-      // FexFileの場合は新しいタブでレポートを開く
-      const reportUrl = webfocusService.getReportUrl(item.fullPath);
-      window.open(reportUrl, '_blank');
+      try {
+        // describeFex APIを呼び出してレポートの詳細を取得
+        const describeResult = await webfocusService.describeFex(item.fullPath);
+
+        if (describeResult.requiresInput) {
+          setVariables(describeResult.variables);
+          setCurrentFexPath(item.fullPath);
+          setShowVariableForm(true);
+        } else {
+          // 直接レポートを実行
+          const reportUrl = webfocusService.getReportUrl(item.fullPath);
+          window.open(reportUrl, '_blank');
+        }
+      } catch (error) {
+        console.error('Error describing FEX file:', error);
+      }
     } else if (item.type === "URLFile") {
       try {
         // URLFileの場合はコンテンツを取得してURLとして開く
@@ -95,6 +113,18 @@ function App() {
     }
   };
 
+  const handleVariableFormSubmit = (values: Record<string, string>) => {
+    if (currentFexPath) {
+      const reportUrl = `${webfocusService.getReportUrl(currentFexPath)}&${new URLSearchParams(values).toString()}`;
+      window.open(reportUrl, '_blank');
+    }
+    setShowVariableForm(false);
+  };
+
+  const handleVariableFormCancel = () => {
+    setShowVariableForm(false);
+  };
+
   // パスをクリックしたときの処理を追加
   const handlePathClick = (path: string) => {
     loadFolderContents(path);
@@ -102,25 +132,33 @@ function App() {
 
   return (
     <div className="app">
-      {!isAuthenticated ? (
-        <Login onLogin={handleLogin} />
-      ) : (
-        <MainLayout
-          userName={userName}
-          userDisplayName={userDisplayName}
-          userFullPath={userFullPath}
-          onWorkspaceClick={handleWorkspaceClick}
-          rightPanelContent={
-            <RightPanel
-              currentPath={currentPath}
-              items={folderItems}
-              isLoading={isLoading}
-              errorMessage={errorMessage}
-              onItemClick={handleFolderItemClick}
-              onPathClick={handlePathClick}
-            />
-          }
+      {showVariableForm ? (
+        <VariableInputForm
+          variables={variables}
+          onSubmit={handleVariableFormSubmit}
+          onCancel={handleVariableFormCancel}
         />
+      ) : (
+        !isAuthenticated ? (
+          <Login onLogin={handleLogin} />
+        ) : (
+          <MainLayout
+            userName={userName}
+            userDisplayName={userDisplayName}
+            userFullPath={userFullPath}
+            onWorkspaceClick={handleWorkspaceClick}
+            rightPanelContent={
+              <RightPanel
+                currentPath={currentPath}
+                items={folderItems}
+                isLoading={isLoading}
+                errorMessage={errorMessage}
+                onItemClick={handleFolderItemClick}
+                onPathClick={handlePathClick}
+              />
+            }
+          />
+        )
       )}
     </div>
   );
