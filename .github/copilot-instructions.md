@@ -192,6 +192,7 @@
 #### ルール追加 (POST /addRule)
 アクセス制御ルールを追加します。
 - パラメータ:
+  - `IBIRS_action`: addRule
   - `IBIRS_path`: リソースパス
   - `IBIRS_subjectPath`: 対象パス
   - `IBIRS_verb`: 権限種別（PERMIT/DENY/等）
@@ -202,6 +203,7 @@
 #### ルール削除 (POST /removeRule)
 アクセス制御ルールを削除します。
 - パラメータ:
+  - `IBIRS_action`: removeRule
   - `IBIRS_path`: リソースパス
   - `IBIRS_subjectPath`: 対象パス
   - `IBIRS_role`: ロール名
@@ -212,6 +214,7 @@
 #### 実行 (GET /run)
 リソースを実行します。
 - パラメータ:
+  - `IBIRS_action`: run
   - `IBIRS_path`: リソースパス
   - `IBIRS_clientPath`: クライアントパス（オプション）
   - `IBIRS_htmlPath`: HTMLパス（オプション）
@@ -222,6 +225,7 @@
 #### 遅延実行 (GET /runDeferred)
 リソースを遅延実行します。
 - パラメータ:
+  - `IBIRS_action`: runDeferred
   - `IBIRS_path`: リソースパス
   - `IBIRS_tDesc`: 実行説明
   - `IBIRS_parameters`: パラメータ（オプション）
@@ -232,11 +236,13 @@
 #### 言語設定 (GET /setLanguage)
 インターフェース言語を設定します。
 - パラメータ:
+  - `IBIRS_action`: setLanguage
   - `IBIRS_language`: 言語コード
 
 #### プロパティ取得 (GET /properties)
 リソースのプロパティを取得します。
 - パラメータ:
+  - `IBIRS_action`: properties
   - `IBIRS_path`: リソースパス
   - `IBIRS_args`: 追加引数（オプション）
 ```

@@ -165,7 +165,7 @@ export class WebFocusService {
 
       // リクエストの実行
       const response = await fetch(url);
-      
+
       if (!response.ok) {
         throw new Error(`Content fetch failed with status: ${response.status} ${response.statusText}`);
       }
@@ -212,7 +212,7 @@ export class WebFocusService {
     // POSTリクエストの場合はボディとCSRFトークンを追加
     if (method === 'POST') {
       requestOptions.body = body || requestParams;
-      
+
       // CSRFトークンがある場合はヘッダーに追加
       if (this.csrfTokenName && this.csrfTokenValue) {
         requestOptions.headers = {
@@ -225,7 +225,7 @@ export class WebFocusService {
 
     // リクエスト実行
     const response = await fetch(url, requestOptions);
-    
+
     if (!response.ok) {
       throw new Error(`Request failed with status: ${response.status} ${response.statusText}`);
     }
@@ -233,15 +233,15 @@ export class WebFocusService {
     // XMLレスポンスの解析
     const xmlText = await response.text();
     console.log(`XML Response for ${action}:`, xmlText); // デバッグ用ログ
-    
+
     const parser = new DOMParser();
     const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
-    
+
     // 戻りコードと説明の抽出
     const ibfsrpc = xmlDoc.querySelector('ibfsrpc');
     const returnCode = ibfsrpc?.getAttribute('returncode') || '';
     const returnDesc = ibfsrpc?.getAttribute('returndesc') || '';
-    
+
     return { xmlDoc, returnCode, returnDesc };
   }
 
@@ -264,7 +264,7 @@ export class WebFocusService {
         const entry = entries[i];
         const key = entry.getAttribute('key');
         const value = entry.getAttribute('value');
-        
+
         if (key === 'IBI_CSRF_Token_Name') {
           this.csrfTokenName = value;
         } else if (key === 'IBI_CSRF_Token_Value') {
@@ -272,14 +272,14 @@ export class WebFocusService {
         }
       }
     }
-    
+
     // ユーザー情報の抽出
     const rootObject = xmlDoc.querySelector('rootObject');
     if (rootObject) {
       this.userDisplayName = rootObject.getAttribute('description') || null;
       this.userFullPath = rootObject.getAttribute('fullPath') || null;
       this.userName = rootObject.getAttribute('name') || null;
-      
+
       // 表示名が空の場合はname属性を使用
       if (!this.userDisplayName || this.userDisplayName.trim() === '') {
         this.userDisplayName = rootObject.getAttribute('name') || null;
@@ -300,7 +300,7 @@ export class WebFocusService {
   private extractFolderItems(xmlDoc: Document): FolderItem[] {
     const items: FolderItem[] = [];
     const itemElements = xmlDoc.querySelectorAll('rootObject > children > item');
-    
+
     itemElements.forEach(item => {
       // 属性の抽出
       const name = item.getAttribute('name') || '';
@@ -312,7 +312,7 @@ export class WebFocusService {
       const createdBy = item.getAttribute('createdBy') || '';
       const lastModified = item.getAttribute('lastModified') || '';
       const container = item.getAttribute('container') === 'true';
-      
+
       items.push({
         name,
         description,
@@ -331,7 +331,7 @@ export class WebFocusService {
   }
 
   /**
-   * レポートを実行してURLを取得する
+   * レポートを実行するためのURLを取得する
    * @param path レポートのパス
    * @returns レポート実行用のURL
    */
