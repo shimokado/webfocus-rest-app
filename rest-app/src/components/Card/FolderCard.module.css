@@ -75,20 +75,21 @@
   color: #455a64;
 }
 
+/* パスとポリシー表示のスタイルは将来再利用する可能性があるためコメントアウト */
+/*
 .path {
   font-family: monospace;
   font-size: 0.9em;
   color: #0066cc;
   overflow: hidden;
   text-overflow: ellipsis;
-  word-break: break-all;
+  white-space: nowrap;
 }
 
 .policy {
   font-family: monospace;
   font-size: 0.9em;
-  color: #455a64;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  color: #555;
   word-break: break-all;
 }
+*/

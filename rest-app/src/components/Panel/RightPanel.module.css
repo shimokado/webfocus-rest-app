@@ -6,6 +6,8 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  width: calc(100% - 250px); /* 左パネルの幅（250px）を考慮して右パネルの幅を設定 */
+  box-sizing: border-box;
 }
 
 .pathBar {

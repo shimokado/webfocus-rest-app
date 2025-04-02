@@ -16,13 +16,13 @@ const Header: React.FC<HeaderProps> = ({ userName, userDisplayName, userFullPath
           <span className={styles.value}>{userName || '-'}</span>
         </div>
         <div className={styles.userDetail}>
-          <span className={styles.label}>表示名:</span>
+          <span className={styles.label}>名前:</span>
           <span className={styles.value}>{userDisplayName || '-'}</span>
         </div>
-        <div className={styles.userDetail}>
+        {/* <div className={styles.userDetail}>
           <span className={styles.label}>パス:</span>
           <span className={styles.value}>{userFullPath || '-'}</span>
-        </div>
+        </div> */}
       </div>
     </header>
   );

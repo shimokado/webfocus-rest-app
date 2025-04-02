@@ -7,15 +7,6 @@ interface FolderCardProps {
 }
 
 const FolderCard: React.FC<FolderCardProps> = ({ item, onClick }) => {
-  const formatDate = (timestamp: string) => {
-    try {
-      const date = new Date(parseInt(timestamp));
-      return date.toLocaleString();
-    } catch {
-      return 'N/A';
-    }
-  };
-
   const handleClick = () => {
     if (onClick) {
       onClick(item);
@@ -38,20 +29,6 @@ const FolderCard: React.FC<FolderCardProps> = ({ item, onClick }) => {
         <div className={styles.details}>
           <span className={styles.detail}>
             <strong>タイプ:</strong> {item.typeDescription}
-          </span>
-          <span className={styles.detail}>
-            <strong>作成者:</strong> {item.createdBy}
-          </span>
-          <span className={styles.detail}>
-            <strong>パス:</strong>
-            <span className={styles.path}>{item.fullPath}</span>
-          </span>
-          <span className={styles.detail}>
-            <strong>ポリシー:</strong>
-            <span className={styles.policy}>{item.policy}</span>
-          </span>
-          <span className={styles.detail}>
-            <strong>更新日時:</strong> {formatDate(item.lastModified)}
           </span>
         </div>
       </div>
