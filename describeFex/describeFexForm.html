@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>変数入力フォーム</title>
+    <link rel="stylesheet" href="describeFexForm.css">
+</head>
+<body>
+    <div id="form-container">
+        <!-- フォームがここに動的に生成されます -->
+    </div>
+
+    <script src="describeFexForm.js"></script>
+    <script>
+        // ページロード時に変数情報を取得してフォームを生成
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                const variables = await fetchVariableInfo(fullPath);
+                createVariableInputForm(variables);
+            } catch (error) {
+                console.error('Error initializing form:', error);
+                const formContainer = document.getElementById('form-container');
+                formContainer.textContent = 'エラーが発生しました。変数情報を取得できませんでした。';
+            }
+        });
+    </script>
+</body>
+</html>
